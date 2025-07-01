@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <div class="w-full max-w-5xl">
+        <h1 class="text-3xl font-bold text-center text-blue-700 mb-6">📦 Productos</h1>
+
+        <div class="flex justify-end mb-4">
+            <a href="/agregar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">+ Agregar producto</a>
+        </div>
+
+        <div class="overflow-x-auto bg-white rounded shadow">
+            <table class="min-w-full text-sm text-left text-gray-700">
+                <thead class="bg-blue-600 text-white uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">ID</th>
+                        <th class="px-4 py-3">Nombre</th>
+                        <th class="px-4 py-3">Precio</th>
+                        <th class="px-4 py-3">Cantidad</th>
+                        <th class="px-4 py-3">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    {% for producto in productos %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-2">{{ producto.id }}</td>
+                        <td class="px-4 py-2">{{ producto.nombre }}</td>
+                        <td class="px-4 py-2">S/. {{ producto.precio }}</td>
+                        <td class="px-4 py-2">{{ producto.cantidad }}</td>
+                        <td class="px-4 py-2 space-x-2">
+                            <a href="/editar/{{ producto.id }}" class="text-blue-600 hover:underline">Editar</a>
+                            <!-- Botón que abre el modal -->
+                            <button onclick="openModal({{ producto.id }} , '{{ producto.nombre }}')" class="text-red-600 hover:underline">Eliminar</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="px-4 py-3 text-center text-gray-500">No hay productos aún.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div class="bg-white p-6 rounded shadow-lg text-center w-full max-w-sm">
+        <h2 class="text-lg font-semibold mb-4 text-red-600">¿Eliminar producto?</h2>
+        <p id="modal-text" class="mb-6 text-gray-700"></p>
+
+        <form id="delete-form" method="POST">
+            <div class="flex justify-center space-x-4">
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Sí, eliminar</button>
+                <button type="button" onclick="closeModal()" class="px-4 py-2 rounded border">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(id, nombre) {
+        document.getElementById("modal").classList.remove("hidden");
+        document.getElementById("modal-text").innerText = `¿Estás seguro de eliminar "${nombre}"?`;
+        document.getElementById("delete-form").action = `/eliminar/${id}`;
+    }
+
+    function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+    }
+</script>
+
+
+</body>
+</html>
